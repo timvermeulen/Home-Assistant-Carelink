@@ -62,7 +62,9 @@ from .const import (
     BINARY_SENSOR_KEY_CONDUIT_IN_RANGE,
     BINARY_SENSOR_KEY_CONDUIT_PUMP_IN_RANGE,
     BINARY_SENSOR_KEY_CONDUIT_SENSOR_IN_RANGE,
+    CONFIG_CLOUD_PULL_INTERVAL,
     MS_TIMEZONE_TO_IANA_MAP,
+    CarelinkConfig
 )
 
 PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.BINARY_SENSOR]
@@ -111,12 +113,13 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 class CarelinkCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
-    def __init__(self, hass: HomeAssistant, entry, update_interval: timedelta):
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry, update_interval: timedelta):
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
         self.client = hass.data[DOMAIN][entry.entry_id][CLIENT]
         self.timezone = hass.config.time_zone
+        self.config: CarelinkConfig = CarelinkConfig(entry)
 
     async def _async_update_data(self):
 

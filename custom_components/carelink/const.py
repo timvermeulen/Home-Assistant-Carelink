@@ -15,6 +15,8 @@ from homeassistant.helpers.entity import EntityCategory
 
 UNAVAILABLE = None
 
+DEFAULT_CLOUD_PULL_INTERVAL = 60
+
 DOMAIN = "carelink"
 CLIENT = "carelink_client"
 COORDINATOR = "coordinator"
@@ -59,6 +61,8 @@ BINARY_SENSOR_KEY_SENSOR_COMM_STATE = "binary_sensor_sensor_comm_state"
 BINARY_SENSOR_KEY_CONDUIT_IN_RANGE = "binary_sensor_conduit_in_range"
 BINARY_SENSOR_KEY_CONDUIT_PUMP_IN_RANGE = "binary_sensor_conduit_pump_in_range"
 BINARY_SENSOR_KEY_CONDUIT_SENSOR_IN_RANGE = "binary_sensor_conduit_sensor_in_range"
+
+CONFIG_CLOUD_PULL_INTERVAL = "cloud_pull_interval"
 
 DEVICE_PUMP_SERIAL = "pump serial"
 DEVICE_PUMP_NAME = "pump name"
@@ -356,6 +360,16 @@ BINARY_SENSORS = (
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
 )
+
+
+class CarelinkConfig:
+    def __init__(self, config_entry: ConfigEntry) -> None:
+        self.sync_interval: int = config_entry.options.get(
+            CONFIG_CLOUD_PULL_INTERVAL, DEFAULT_CLOUD_PULL_INTERVAL
+        )
+
+        _LOGGER.debug(f"{DOMAIN} - config class initialized")
+
 
 MS_TIMEZONE_TO_IANA_MAP = {
     "Egypt Standard Time": "Africa/Cairo",
